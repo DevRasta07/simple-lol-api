@@ -1,6 +1,5 @@
 const router = require("express").Router()
 const { default: axios } = require("axios")
-// const API_KEY = "RGAPI-55c7270e-5b45-4260-b155-24657ef83aca"
 
 router.get("/:region/accounts/:method/:key1/:key2?", async (req, res) => {
     const { region, method, key1, key2 } = req.params
