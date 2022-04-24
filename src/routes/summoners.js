@@ -1,17 +1,18 @@
 const router = require("express").Router()
 const { default: axios } = require("axios")
-const API_KEY = "RGAPI-55c7270e-5b45-4260-b155-24657ef83aca"
+// const API_KEY = "RGAPI-55c7270e-5b45-4260-b155-24657ef83aca"
 
 router.get("/:platform/summoners/:method/:key", async (req, res) => {
     const { platform, method, key } = req.params
+    const { api_key: apiKey } = req.query
     let url
 
     if (method === "by-summoner-id") {
-        url = `https://${platform}.api.riotgames.com/lol/summoner/v4/summoners/${key}?api_key=${API_KEY}`
+        url = `https://${platform}.api.riotgames.com/lol/summoner/v4/summoners/${key}?api_key=${apiKey}`
     }
 
     else {
-        url = `https://${platform}.api.riotgames.com/lol/summoner/v4/summoners/${method}/${key}?api_key=${API_KEY}`
+        url = `https://${platform}.api.riotgames.com/lol/summoner/v4/summoners/${method}/${key}?api_key=${apiKey}`
     }
 
     try {
