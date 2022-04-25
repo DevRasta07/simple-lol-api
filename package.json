@@ -7,10 +7,13 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js"
   },
-  "keywords": ["wrapper", "riot-api"],
+  "keywords": [
+    "wrapper",
+    "riot-api"
+  ],
   "author": "Bernardo Euler <rasta.dev07@gmail.com>",
   "license": "ISC",
-  "repository":{
+  "repository": {
     "type": "git",
     "url": "https://github.com/DevRasta07/simple-lol-api"
   },
