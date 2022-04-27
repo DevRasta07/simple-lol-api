@@ -1,18 +1,23 @@
 const router = require("express").Router()
 const { default: axios } = require("axios")
 
-router.get("/:platform/summoners/:method/:key", async (req, res) => {
+router.use("/:platform/summoners/:method/:key", (req, res, next) => {
     const { platform, method, key } = req.params
-    const { api_key: apiKey } = req.query
-    let url
+    const apiKey = process.env.API_KEY || req.query.api_key
 
     if (method === "by-summoner-id") {
-        url = `https://${platform}.api.riotgames.com/lol/summoner/v4/summoners/${key}?api_key=${apiKey}`
+        const url = `https://${platform}.api.riotgames.com/lol/summoner/v4/summoners/${key}?api_key=${apiKey}`
+        req.summonersDataURL = url
+    } else {
+        const url = `https://${platform}.api.riotgames.com/lol/summoner/v4/summoners/${method}/${key}?api_key=${apiKey}`
+        req.summonersDataURL = url
     }
 
-    else {
-        url = `https://${platform}.api.riotgames.com/lol/summoner/v4/summoners/${method}/${key}?api_key=${apiKey}`
-    }
+    next()
+})
+
+router.get("/:platform/summoners/:method/:key", async (req, res) => {
+    const url = req.summonersDataURL
 
     try {
         const { data: summonerData } = await axios.get(url)
