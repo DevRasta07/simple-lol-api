@@ -1,10 +1,9 @@
 const router = require("express").Router()
 const { default: axios } = require("axios")
-const lastVersion = "12.7.1"
-const baseUrl = `http://ddragon.leagueoflegends.com/cdn/${lastVersion}/data`
 
-router.get("/:language/champions", async (req, res) => {
-    const { language } = req.params
+router.get("/:version/:language/champions", async (req, res) => {
+    const { version, language } = req.params
+    const baseUrl = `http://ddragon.leagueoflegends.com/cdn/${version}/data`
     const url = `${baseUrl}/${language}/champion.json`
 
     try {
@@ -23,8 +22,9 @@ router.get("/:language/champions", async (req, res) => {
     }
 })
 
-router.get("/:language/champions/:id", async (req, res) => {
-    const { language, id } = req.params
+router.get("/:version/:language/champions/:id", async (req, res) => {
+    const { version, language, id } = req.params
+    const baseUrl = `http://ddragon.leagueoflegends.com/cdn/${version}/data`
     const url = `${baseUrl}/${language}/champion.json`
 
     try {
