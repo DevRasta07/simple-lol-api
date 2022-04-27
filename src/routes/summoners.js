@@ -17,17 +17,40 @@ router.use("/:platform/summoners/:method/:key", (req, res, next) => {
 })
 
 router.get("/:platform/summoners/:method/:key", async (req, res) => {
+    const { platform } = req.params
+    const apiKey = process.env.API_KEY || req.query.api_key
     const url = req.summonersDataURL
 
     try {
         const { data: summonerData } = await axios.get(url)
+        const summonerChampionMasteries = await getChampionMasteries(summonerData)
+        const masteryScore = await getMasteryScore(summonerData)
+
+        Object.assign(summonerData, masteryScore, summonerChampionMasteries)
+
         return res.json(summonerData)
     }
 
     catch (err) {
         console.error(err.response.data.status)
-        return res.status(404).send(err.response.data.status.message)
+        return res.json(err.response.data.status)
+    }
+
+    async function getChampionMasteries(summonerData) {
+        const { id: summonerId } = summonerData
+        const url = `https://${platform}.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${summonerId}?api_key=${apiKey}`
+        const { data: championMasteries } = await axios.get(url)
+        return { championMasteries }
+    }
+
+    async function getMasteryScore(summonerData) {
+        const { id: summonerId } = summonerData
+        const url = `https://${platform}.api.riotgames.com/lol/champion-mastery/v4/scores/by-summoner/${summonerId}?api_key=${apiKey}`
+        const { data: masteryScore } = await axios.get(url)
+        return { masteryScore }
     }
 })
+
+
 
 module.exports = router
