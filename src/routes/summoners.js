@@ -23,10 +23,11 @@ router.get("/:platform/summoners/:method/:key", async (req, res) => {
 
     try {
         const { data: summonerData } = await axios.get(url)
-        const summonerChampionMasteries = await getChampionMasteries(summonerData)
+        const rankedStatuses = await getRankedStatuses(summonerData)
         const masteryScore = await getMasteryScore(summonerData)
+        const summonerChampionMasteries = await getChampionMasteries(summonerData)
 
-        Object.assign(summonerData, masteryScore, summonerChampionMasteries)
+        Object.assign(summonerData, rankedStatuses, masteryScore, summonerChampionMasteries)
 
         return res.json(summonerData)
     }
@@ -48,6 +49,13 @@ router.get("/:platform/summoners/:method/:key", async (req, res) => {
         const url = `https://${platform}.api.riotgames.com/lol/champion-mastery/v4/scores/by-summoner/${summonerId}?api_key=${apiKey}`
         const { data: masteryScore } = await axios.get(url)
         return { masteryScore }
+    }
+
+    async function getRankedStatuses(summonerData) {
+        const { id: summonerId } = summonerData
+        const url = `https://${platform}.api.riotgames.com/lol/league/v4/entries/by-summoner/${summonerId}?api_key=${apiKey}`
+        const { data: rankedStatuses } = await axios.get(url)
+        return { rankedStatuses }
     }
 })
 
